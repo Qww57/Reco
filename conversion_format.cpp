@@ -53,3 +53,18 @@ fposition point2fposition(Point point){
     _position.y = (float) point.y;
     return _position;
 }
+
+Point fposition2point(fposition fpos){
+    Point _point;
+    _point.x = (int) fpos.x;
+    _point.y = (int) fpos.y;
+    return _point;
+}
+
+vector<Point> vecfposition2vecpoint(vector<fposition> entree){
+    vector<Point> sortie;
+    for (int i = 0; i< entree.size(); i++)
+        sortie.push_back(fposition2point(entree[i]));
+    return sortie;
+}
+

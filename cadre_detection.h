@@ -37,7 +37,7 @@ void cadreDetection_callback(cv::Mat img, std::vector<cv::Point> anglesBillard);
 
 
 /**
- * \fn
+ * \fn Billard cadreDetection2_callback(cv::Mat img, std::vector<std::vector<cv::Point> > &historiqueDesPositions)
  * \brief Fonction de détection du cadre du billard
  *
  * \param
@@ -46,40 +46,19 @@ void cadreDetection_callback(cv::Mat img, std::vector<cv::Point> anglesBillard);
  */
 Billard cadreDetection2_callback(cv::Mat img, std::vector<std::vector<cv::Point> > &historiqueDesPositions);
 
+
+/**
+ * \fn bool parametrageCadreDone(std::vector<std::vector<cv::Point> > historiqueDesPositions)
+ * \brief Programme de détection de la fin de l'initialisation
+ *
+ * \param std::vector<std::vector<cv::Point> > historiqueDesPositions
+ * \return booléen, vrai si le paramétrage est fait
+ */
 bool parametrageCadreDone(std::vector<std::vector<cv::Point> > historiqueDesPositions);
 
 
-/// AUTRES
 /**
- * \fn
- * \brief Distance entre deux points
- *
- * \param cv::Point point1, cv::Point point2
- * \return cv::Point
- */
-int distancePoints(cv::Point point1, cv::Point point2);
-
-/**
- * \fn
- * \brief Milieu de deux points
- *
- * \param cv::Point point1, cv::Point point2
- * \return cv::Point
- */
-cv::Point milieuPoints(cv::Point point1, cv::Point point2);
-
-/**
- * \fn
- * \brief Périmètre d'un contours
- *
- * \param std::vector<cv::Point> contours
- * \return int perimetre
- */
-int perimetrePoints(std::vector<cv::Point> contours);
-
-
-/**
- * \fn
+ * \fn void repositionnement(std::vector<cv::Point> &contours, cv::Mat dst, bool aff)
  * \brief Fonction de repositionnement des angles détectés
  *
  * \param listes de cv::Point en entrée
@@ -93,6 +72,41 @@ int perimetrePoints(std::vector<cv::Point> contours);
  *
  */
 void repositionnement(std::vector<cv::Point> &contours, cv::Mat dst, bool aff);
+
+
+/// AUTRES
+
+
+/**
+ * \fn int distancePoints(cv::Point point1, cv::Point point2)
+ * \brief Distance entre deux points
+ *
+ * \param cv::Point point1, cv::Point point2
+ * \return cv::Point
+ */
+int distancePoints(cv::Point point1, cv::Point point2);
+
+
+/**
+ * \fn cv::Point milieuPoints(cv::Point point1, cv::Point point2)
+ * \brief Milieu de deux points
+ *
+ * \param cv::Point point1, cv::Point point2
+ * \return cv::Point
+ */
+cv::Point milieuPoints(cv::Point point1, cv::Point point2);
+
+
+/**
+ * \fn int perimetrePoints(std::vector<cv::Point> contours)
+ * \brief Périmètre d'un contours
+ *
+ * \param std::vector<cv::Point> contours
+ * \return int perimetre
+ */
+int perimetrePoints(std::vector<cv::Point> contours);
+
+
 
 
 #endif // CADRE_DETECTION_H

@@ -66,6 +66,13 @@ struct position{
     float thetaz;*/
 };
 
+/**
+ * \struct position
+ * \brief structure décrivant la position dans l'espace avec des flottants
+ *
+ * Utile pour déterminer la matrice de changement de repère
+ *
+ */
 struct fposition{
     float x;
     float y;
@@ -87,7 +94,14 @@ struct Boule {
     position pos;
 };
 
-
+/**
+ * \struct Billard
+ * \brief structure décrivant le billard
+ * \todo affiner les paramètres présents
+ *
+ *
+ *
+ */
 struct Billard {
     // points vus à l'écran, on s'intéresse qu'à x et y
     position sommet1;

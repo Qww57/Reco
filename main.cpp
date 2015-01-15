@@ -24,6 +24,7 @@
 #include "cadre_detection.h"
 #include "boules_detection.h"
 #include "projection.h"
+#include "conversion_format.h"
 
 using namespace cv;
 using namespace std;
@@ -32,10 +33,11 @@ using namespace std;
 /**
 *
 * \todo
-// - faire la détection de la canne
-// - faire la projection
+// - faire la projection: DONE
+// - faire les tests unitaire de la projection
 // - faire la fonction de calcul de la position simplifiée
-// - faire le parametrage de la detection
+// - faire le parametrage de la detection : DONE : A TESTER
+// - faire la détection de la canne
 // - refaire la fonction de calcul de la distance non simplifiée (plus tard)
 // - refaire la fonction de calcul de la position non simplifiée (plus tard)
 // - faire le calibrage des couleurs (plus tard)
@@ -92,6 +94,7 @@ int main( int argc, char** argv){
         //bouleDetection_createtrackbar();
 
         billard = cadreDetection2_callback(imgFlip, historiquedespositions);
+        //affichage_projection_test(imgFlip);
 
         /* UTILISATION DE LA PROJECTION */
         float l = 5.5;
@@ -100,10 +103,13 @@ int main( int argc, char** argv){
         float B = parametreB(billard.fsommet1, billard.fsommet2, l, L);
         float C = parametreC(billard.fsommet1, billard.fsommet2, l, L);
         float D = parametreD(billard.fsommet1, billard.fsommet2, l, L);
-        //vector<float> coefficients = float2vector(A,B,C,D) ;
+        vector<float> coefficients = float2vector(A,B,C,D) ;
         cout << "A :" << A << " B :" << B << " C :" << C << " D: " << D << endl;
-        //vector<fposition> fcontours = fposition2vector(billard.fsommet1, billard.fsommet2, billard.fsommet3, billard.fsommet4);
-        //vector<fposition> nouveaucadre = produitmatriciel2x2(fcontours, A, B, C, D);
+        vector<fposition> fcontours = fposition2vector(billard.fsommet1, billard.fsommet2, billard.fsommet3, billard.fsommet4);
+        vector<fposition> nouveaucadre = produitmatriciel2x2(fcontours, coefficients);
+        vector<Point> _nouveaucadre = vecfposition2vecpoint(nouveaucadre);
+        affichage_projection(_nouveaucadre, imgFlip);
+
 
 
         if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop

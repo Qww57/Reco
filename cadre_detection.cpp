@@ -10,6 +10,8 @@
  *
  */
 
+///\todo afficher le cadre une fois détecter en rouge tout le temps
+
 #include <vector>
 #include <math.h>
 #include "opencv2/highgui/highgui.hpp"
@@ -26,12 +28,7 @@ using namespace std;
 
 int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
 double fontScale = 1;
-
-
-///IDEES
-// on les valeurs des mesures des cotés par rapport à ce que ça devrait être
-// on calcule peut être même les valeurs des angles
-// on obtient la conversion des bords du billard dans (x,y)
+int k = 0;
 
 
 void cadreDetection_callback(Mat img, vector<Point> &anglesBillard){ //INUTILE
@@ -105,149 +102,145 @@ void cadreDetection_callback(Mat img, vector<Point> &anglesBillard){ //INUTILE
 
 Billard cadreDetection2_callback(Mat img, vector<vector<Point> > &historiqueDesPositions){ // voir si on repasse pas ça en void et on met le billard en entrée aussi
 
-    if (!parametrageCadreDone(historiqueDesPositions)){ // si le paramétrage n'est pas fait bool = "false", on le fait
+    vector<Point> cadre;
+    Billard _billard;
 
-        vector<Point> cadre;
-        Billard _billard;
+    // Concersion du gris en image binaire
+    Mat imgG;
+    cvtColor( img, imgG, CV_BGR2GRAY );
+    Mat imgB;
+    Canny(imgG, imgB, 0, 50, 5 );
 
-        // Concersion du gris en image binaire
-        Mat imgG;
-        cvtColor( img, imgG, CV_BGR2GRAY );
-        Mat imgB;
-        Canny(imgG, imgB, 0, 50, 5 );
+    // Find contours
+    vector<vector<cv::Point> > contours;
+    findContours(imgB, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
-        // Find contours
-        vector<vector<cv::Point> > contours;
-        findContours(imgB, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    // The array for storing the approximation curve
+    vector<Point> approx;
 
-        // The array for storing the approximation curve
-        vector<Point> approx;
+    // We'll put the labels in this destination image
+    Mat dst = img;
 
-        // We'll put the labels in this destination image
-        Mat dst = img;
+    // écriture sur les images
+    int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
+    double fontScale = 1;
 
-        // écriture sur les images
-        int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
-        double fontScale = 1;
+    for (int i = 0; i < contours.size(); i++)
+    {
+        // Approximate contour with accuracy proportional to the contour perimeter
+        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.02,true);
 
-        for (int i = 0; i < contours.size(); i++)
+        // Skip small or non-convex objects
+        if (fabs(cv::contourArea(contours[i])) < 300 || !isContourConvex(approx))
+            continue;
+
+        else if (approx.size() >= 4 && approx.size() <= 6)
         {
-            // Approximate contour with accuracy proportional to the contour perimeter
-            approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.02,true);
+            // Number of vertices of polygonal curve
+            int vtc = approx.size();
+            if (approx.size() == 4){
+                if (perimetrePoints(approx) > 400){
 
-            // Skip small or non-convex objects
-            if (fabs(cv::contourArea(contours[i])) < 300 || !isContourConvex(approx))
-                continue;
+                    // REPOSITIONNEMENT
+                    repositionnement(approx, dst, false);
 
-            else if (approx.size() >= 4 && approx.size() <= 6)
-            {
-                // Number of vertices of polygonal curve
-                int vtc = approx.size();
-                if (approx.size() == 4){
-                    if (perimetrePoints(approx) > 400){
+                    //AFFICHAGE DES LIGNES
+                    line(dst, approx[0], approx[1], Scalar::all(255), 2, 8, 0);
+                    line(dst, approx[1], approx[2], Scalar::all(255), 2, 8, 0);
+                    line(dst, approx[2], approx[3], Scalar::all(255), 2, 8, 0);
+                    line(dst, approx[3], approx[0], Scalar::all(255), 2, 8, 0);
 
-                        // REPOSITIONNEMENT
-                        repositionnement(approx, dst, false);
+                    // AFFICHAGE DES POSITIONS
+                    /*string s0 = point2string(approx[0]);
+                    putText(dst, s0, approx[0], fontFace, fontScale,Scalar::all(255),1,0);
+                    string s1 = point2string(approx[1]);
+                    putText(dst, s1, approx[1], fontFace, fontScale,Scalar::all(255),1,0);
+                    string s2 = point2string(approx[2]);
+                    putText(dst, s2, approx[2], fontFace, fontScale,Scalar::all(255),1,0);
+                    string s3 = point2string(approx[3]);
+                    putText(dst, s3, approx[3], fontFace, fontScale,Scalar::all(255),1,0);*/
 
-                        //AFFICHAGE DES LIGNES
-                        line(dst, approx[0], approx[1], Scalar::all(255), 2, 8, 0);
-                        line(dst, approx[1], approx[2], Scalar::all(255), 2, 8, 0);
-                        line(dst, approx[2], approx[3], Scalar::all(255), 2, 8, 0);
-                        line(dst, approx[3], approx[0], Scalar::all(255), 2, 8, 0);
+                    // AFFICHAGE DU NUMERO DE L'ANGLE
+                    string s0 = "0";
+                    putText(dst, s0, approx[0], fontFace, fontScale,Scalar::all(255),1,0);
+                    string s1 = "1";
+                    putText(dst, s1, approx[1], fontFace, fontScale,Scalar::all(255),1,0);
+                    string s2 = "2";
+                    putText(dst, s2, approx[2], fontFace, fontScale,Scalar::all(255),1,0);
+                    string s3 = "3";
+                    putText(dst, s3, approx[3], fontFace, fontScale,Scalar::all(255),1,0);
 
-                        // AFFICHAGE DES POSITIONS
-                        /*string s0 = point2string(approx[0]);
-                        putText(dst, s0, approx[0], fontFace, fontScale,Scalar::all(255),1,0);
-                        string s1 = point2string(approx[1]);
-                        putText(dst, s1, approx[1], fontFace, fontScale,Scalar::all(255),1,0);
-                        string s2 = point2string(approx[2]);
-                        putText(dst, s2, approx[2], fontFace, fontScale,Scalar::all(255),1,0);
-                        string s3 = point2string(approx[3]);
-                        putText(dst, s3, approx[3], fontFace, fontScale,Scalar::all(255),1,0);*/
+                    // CALCUL DES LONGUEURS
+                    int l1, l2, l3, l4;
+                    l1 = distancePoints(approx[0],approx[1]);
+                    l2 = distancePoints(approx[1],approx[2]);
+                    l3 = distancePoints(approx[2],approx[3]);
+                    l4 = distancePoints(approx[3],approx[0]);
 
-                        // AFFICHAGE DU NUMERO DE L'ANGLE
-                        string s0 = "0";
-                        putText(dst, s0, approx[0], fontFace, fontScale,Scalar::all(255),1,0);
-                        string s1 = "1";
-                        putText(dst, s1, approx[1], fontFace, fontScale,Scalar::all(255),1,0);
-                        string s2 = "2";
-                        putText(dst, s2, approx[2], fontFace, fontScale,Scalar::all(255),1,0);
-                        string s3 = "3";
-                        putText(dst, s3, approx[3], fontFace, fontScale,Scalar::all(255),1,0);
+                    // AFFICHAGE DES LONGUEURS
+                    Point mil1, mil2, mil3, mil4;
+                    mil1 = milieuPoints(approx[0],approx[1]);
+                    mil2 = milieuPoints(approx[1],approx[2]);
+                    mil3 = milieuPoints(approx[2],approx[3]);
+                    mil4 = milieuPoints(approx[3],approx[0]);
 
-                        // CALCUL DES LONGUEURS
-                        int l1, l2, l3, l4;
-                        l1 = distancePoints(approx[0],approx[1]);
-                        l2 = distancePoints(approx[1],approx[2]);
-                        l3 = distancePoints(approx[2],approx[3]);
-                        l4 = distancePoints(approx[3],approx[0]);
-
-                        // AFFICHAGE DES LONGUEURS
-                        Point mil1, mil2, mil3, mil4;
-                        mil1 = milieuPoints(approx[0],approx[1]);
-                        mil2 = milieuPoints(approx[1],approx[2]);
-                        mil3 = milieuPoints(approx[2],approx[3]);
-                        mil4 = milieuPoints(approx[3],approx[0]);
-
-                        string ss0 = int2string(l1);
-                        putText(dst, ss0, mil1, fontFace, fontScale,Scalar::all(255),1,0);
-                        string ss1 = int2string(l2);
-                        putText(dst, ss1, mil2, fontFace, fontScale,Scalar::all(255),1,0);
-                        string ss2 = int2string(l3);
-                        putText(dst, ss2, mil3, fontFace, fontScale,Scalar::all(255),1,0);
-                        string ss3 = int2string(l4);
-                        putText(dst, ss3, mil4, fontFace, fontScale,Scalar::all(255),1,0);
+                    string ss0 = int2string(l1);
+                    putText(dst, ss0, mil1, fontFace, fontScale,Scalar::all(255),1,0);
+                    string ss1 = int2string(l2);
+                    putText(dst, ss1, mil2, fontFace, fontScale,Scalar::all(255),1,0);
+                    string ss2 = int2string(l3);
+                    putText(dst, ss2, mil3, fontFace, fontScale,Scalar::all(255),1,0);
+                    string ss3 = int2string(l4);
+                    putText(dst, ss3, mil4, fontFace, fontScale,Scalar::all(255),1,0);
 
 
-
-
-                        // ENREGISTREMENT DES DONNEES DANS LE BILLARD
-                        ///\todo mieux spécifier le moment où on détecte
+                    // ENREGISTREMENT DES DONNEES DANS LE BILLARD
+                    if (parametrageCadreDone(historiqueDesPositions)&&(k==0)){
                         _billard.fsommet1=point2fposition(approx[0]);
                         _billard.fsommet2=point2fposition(approx[1]);
                         _billard.fsommet3=point2fposition(approx[2]);
                         _billard.fsommet4=point2fposition(approx[3]);
-
-
-                        // ACTUALISATION DE PARAMBILLARD
-                        historiqueDesPositions.push_back(approx);
-
-
+                        k++;
                     }
-                    else
-                       continue;
-                       // cout << "Quadrilatère detecté mais non affiché" << endl;
+
+                    // ACTUALISATION DE L'HISTORIQUE DES POSITIONS
+                    if (!parametrageCadreDone(historiqueDesPositions)){
+                        historiqueDesPositions.push_back(approx);
+                    }
+
                 }
                 else
-                    continue;
+                   continue;
+                   // cout << "Quadrilatère detecté mais non affiché" << endl;
             }
             else
                 continue;
+        }
+        else
+            continue;
 
-        } // end of for() loop
-        namedWindow( "Billard", CV_WINDOW_AUTOSIZE );
-        imshow("Billard", dst);
+    } // end of for() loop
+    namedWindow( "Billard", CV_WINDOW_AUTOSIZE );
+    imshow("Billard", dst);
 
-        return _billard;
-    }
+    return _billard;
 }
 
-bool parametrageCadreDone(vector<vector<Point> > hDP){ // TO DO
+bool parametrageCadreDone(vector<vector<Point> > hDP){
     // déterminer quand on a paramétré le truc
     bool param;
-    if ((hDP.empty())||(hDP.size()<5)){
+    if ((hDP.empty())||(hDP.size()<20)){
         param = false;
-        cout << "trop petit : ";
-        cout << hDP.size() << endl;
+        cout << "trop petit : " << hDP.size() << endl;
     }
-    else if (hDP.back() == hDP[hDP.size()-1]){
-            if (hDP.back() == hDP[hDP.size()-2]){
-                if (hDP.back() == hDP[hDP.size()-3]){
-                    param = true;
-                    cout << "CONFIGURATION FAITE: BILLARD DETECTE" << endl << endl;
-                }
-            }
+    else if ((hDP.back() == hDP[hDP.size()-1])&&(hDP.back() == hDP[hDP.size()-2])&&(hDP.back() == hDP[hDP.size()-3])){
+        if ((hDP.back() == hDP[hDP.size()-4])&&(hDP.back() == hDP[hDP.size()-5])&&(hDP.back() == hDP[hDP.size()-6])){
+            param = true;
+            if (k==0)
+                cout << "CONFIGURATION FAITE: BILLARD DETECTE" << endl << endl;
+        }
     }
+
     else {
         param = false;
         cout << "RAS" << endl;
@@ -258,35 +251,7 @@ bool parametrageCadreDone(vector<vector<Point> > hDP){ // TO DO
 
 
 
-
-
-
 /// FONCTIONS D'AIDE
-
-int distancePoints(Point point1, Point point2){
-    int distance;
-    distance = floor(sqrt(abs((point2.x-point1.x)*(point2.x-point1.x)+(point2.y-point1.y)*(point2.y-point1.y))));
-    return distance;
-}
-
-Point milieuPoints(Point point1, Point point2){
-    Point milieu;
-    milieu.x = (point1.x + point2.x)/2;
-    milieu.y = (point1.y + point2.y)/2;
-    return milieu;
-}
-
-int perimetrePoints(vector<Point> contours){
-    if (contours.size() == 4){
-        int perimetre;
-        perimetre =   distancePoints(contours[0],contours[1])
-                    + distancePoints(contours[1],contours[2])
-                    + distancePoints(contours[2],contours[3])
-                    + distancePoints(contours[3],contours[0]);
-        return perimetre;
-    }
-    else return 0;
-}
 
 void repositionnement(vector<Point> &approx, Mat dst, bool aff){
 
@@ -363,4 +328,29 @@ void repositionnement(vector<Point> &approx, Mat dst, bool aff){
     }
 
 
+}
+
+int distancePoints(Point point1, Point point2){
+    int distance;
+    distance = floor(sqrt(abs((point2.x-point1.x)*(point2.x-point1.x)+(point2.y-point1.y)*(point2.y-point1.y))));
+    return distance;
+}
+
+Point milieuPoints(Point point1, Point point2){
+    Point milieu;
+    milieu.x = floor((point1.x + point2.x)/2);
+    milieu.y = floor((point1.y + point2.y)/2);
+    return milieu;
+}
+
+int perimetrePoints(vector<Point> contours){
+    if (contours.size() == 4){
+        int perimetre;
+        perimetre =   distancePoints(contours[0],contours[1])
+                    + distancePoints(contours[1],contours[2])
+                    + distancePoints(contours[2],contours[3])
+                    + distancePoints(contours[3],contours[0]);
+        return perimetre;
+    }
+    else return 0;
 }

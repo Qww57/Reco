@@ -28,8 +28,12 @@ float parametreD(fposition pos1, fposition pos2, float l, float L);
 
 std::vector<std::vector<float> > matricedepassage(position pos1, position pos2, float l, float L);
 
-std::vector<fposition> produitmatriciel2x2(std::vector<fposition> contours, float A, float B, float C, float D);
+std::vector<fposition> produitmatriciel2x2(std::vector<fposition> contours, std::vector<float> coefficients);
 
 std::vector<fposition> fposition2vector(fposition position1,fposition position2,fposition position3,fposition position4);
 
 std::vector<float> float2vector(float A, float B, float C, float D);
+
+void affichage_projection(std::vector<cv::Point> cadre, cv::Mat drawing);
+
+cv::Mat changement_echelle(cv::Point p1, cv::Point p2, cv::Point p3, cv::Point p4);

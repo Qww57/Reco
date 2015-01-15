@@ -47,7 +47,16 @@ std::string point2string(cv::Point point);
  */
 position point2position(cv::Point point);
 
-
+/**
+ * \fn fposition point2fposition(cv::Point point)
+ * \brief Fonction de conversion d'un cv::Point en fposition
+ *
+ * \param Point à convertir
+ * \return fposition convertie
+ */
 fposition point2fposition(cv::Point point);
+
+cv::Point fposition2point(fposition fpos);
+std::vector<cv::Point> vecfposition2vecpoint(std::vector<fposition> entree);
 
 #endif //CONVERSION_FORMAT_H
