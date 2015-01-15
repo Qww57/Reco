@@ -44,20 +44,9 @@ void cadreDetection_callback(cv::Mat img, std::vector<cv::Point> anglesBillard);
  * \return création d'une fenêtre à l'écran "Billard"
  *         où le billard est affiché
  */
-std::vector<cv::Point> cadreDetection_callback(cv::Mat img);
+Billard cadreDetection2_callback(cv::Mat img, std::vector<std::vector<cv::Point> > &historiqueDesPositions);
 
-
-/**
- * \fn
- * \brief Fonction de détection du cadre du billard
- *
- * \param
- * \return création d'une fenêtre à l'écran "Billard"
- *         où le billard est affiché
- */
-Billard cadreDetection2_callback(cv::Mat img);
-
-bool parametrageCadreDone();
+bool parametrageCadreDone(std::vector<std::vector<cv::Point> > historiqueDesPositions);
 
 
 /// AUTRES

@@ -21,6 +21,7 @@
 using namespace std;
 using namespace cv;
 
+/// \todo voir pourquoi dans le main fposition2vector fait tout planter
 
 /// MATRICE de passage à partir des positions à l'écran et des vraies valeurs de l et L
 //   A B

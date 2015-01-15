@@ -59,6 +59,8 @@ int main( int argc, char** argv){
     vector<Point> anglesBillard;
     Billard billard;
 
+    vector<vector<Point> > historiquedespositions;
+
 
     while (true)
     {
@@ -89,7 +91,7 @@ int main( int argc, char** argv){
         //color_createtrackbar();
         //bouleDetection_createtrackbar();
 
-        billard = cadreDetection2_callback(imgFlip);
+        billard = cadreDetection2_callback(imgFlip, historiquedespositions);
 
         /* UTILISATION DE LA PROJECTION */
         float l = 5.5;
@@ -99,7 +101,6 @@ int main( int argc, char** argv){
         float C = parametreC(billard.fsommet1, billard.fsommet2, l, L);
         float D = parametreD(billard.fsommet1, billard.fsommet2, l, L);
         //vector<float> coefficients = float2vector(A,B,C,D) ;
-
         cout << "A :" << A << " B :" << B << " C :" << C << " D: " << D << endl;
         //vector<fposition> fcontours = fposition2vector(billard.fsommet1, billard.fsommet2, billard.fsommet3, billard.fsommet4);
         //vector<fposition> nouveaucadre = produitmatriciel2x2(fcontours, A, B, C, D);

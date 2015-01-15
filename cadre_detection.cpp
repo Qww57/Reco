@@ -102,74 +102,10 @@ void cadreDetection_callback(Mat img, vector<Point> &anglesBillard){ //INUTILE
 
 };
 
-vector<Point> cadreDetection_callback(Mat img){//INUTILE
 
-    vector<Point> cadre;
+Billard cadreDetection2_callback(Mat img, vector<vector<Point> > &historiqueDesPositions){ // voir si on repasse pas ça en void et on met le billard en entrée aussi
 
-    // Concersion du gris en image binaire
-    Mat imgG;
-    cvtColor( img, imgG, CV_BGR2GRAY );
-    Mat imgB;
-    Canny(imgG, imgB, 0, 50, 5 );
-
-    // Find contours
-    vector<vector<cv::Point> > contours;
-    findContours(imgB, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-
-    // The array for storing the approximation curve
-    vector<Point> approx;
-
-    // We'll put the labels in this destination image
-    Mat dst = img;
-
-    // écriture sur les images
-    int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
-    double fontScale = 1;
-
-    for (int i = 0; i < contours.size(); i++)
-    {
-        // Approximate contour with accuracy proportional to the contour perimeter
-        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.02,true);
-
-        // Skip small or non-convex objects
-        if (fabs(cv::contourArea(contours[i])) < 300 || !isContourConvex(approx))
-            continue;
-
-        if (approx.size() == 3)
-            continue;
-
-        else if (approx.size() >= 4 && approx.size() <= 6)
-        {
-            // Number of vertices of polygonal curve
-            int vtc = approx.size();
-            if (approx.size() == 4){
-                line(dst, approx[0], approx[1], Scalar::all(255), 1, 8, 0);
-                line(dst, approx[1], approx[2], Scalar::all(255), 1, 8, 0);
-                line(dst, approx[2], approx[3], Scalar::all(255), 1, 8, 0);
-                line(dst, approx[3], approx[0], Scalar::all(255), 1, 8, 0);
-            // FAIRE AFFICHAGE
-                //string s0;
-                //putText(dst, s0, approx[0], fontFace, fontScale,Scalar::all(255),1,0);
-                cout << "Approx : " << approx[0] << approx[1] << approx[2] << approx[3] << endl;
-                cadre = approx;
-            }
-            else
-                continue;
-        }
-
-        else
-            continue;
-
-    } // end of for() loop
-    namedWindow( "Billard", CV_WINDOW_AUTOSIZE );
-    imshow("Billard", dst);
-
-    return cadre;
-};
-
-Billard cadreDetection2_callback(Mat img){ // voir si on repasse pas ça en void et on met le billard en entrée aussi
-
-    if (!parametrageCadreDone()){ // si le paramétrage n'est pas fait bool = "false", on le fait
+    if (!parametrageCadreDone(historiqueDesPositions)){ // si le paramétrage n'est pas fait bool = "false", on le fait
 
         vector<Point> cadre;
         Billard _billard;
@@ -263,15 +199,24 @@ Billard cadreDetection2_callback(Mat img){ // voir si on repasse pas ça en void
                         putText(dst, ss3, mil4, fontFace, fontScale,Scalar::all(255),1,0);
 
 
+
+
                         // ENREGISTREMENT DES DONNEES DANS LE BILLARD
+                        ///\todo mieux spécifier le moment où on détecte
                         _billard.fsommet1=point2fposition(approx[0]);
                         _billard.fsommet2=point2fposition(approx[1]);
                         _billard.fsommet3=point2fposition(approx[2]);
                         _billard.fsommet4=point2fposition(approx[3]);
-                                //faire suite
+
+
+                        // ACTUALISATION DE PARAMBILLARD
+                        historiqueDesPositions.push_back(approx);
+
+
                     }
                     else
-                        cout << "Quadrilatère detecté mais non affiché" << endl;
+                       continue;
+                       // cout << "Quadrilatère detecté mais non affiché" << endl;
                 }
                 else
                     continue;
@@ -287,9 +232,27 @@ Billard cadreDetection2_callback(Mat img){ // voir si on repasse pas ça en void
     }
 }
 
-bool parametrageCadreDone(){ // TO DO
+bool parametrageCadreDone(vector<vector<Point> > hDP){ // TO DO
     // déterminer quand on a paramétré le truc
-    bool param = false;
+    bool param;
+    if ((hDP.empty())||(hDP.size()<5)){
+        param = false;
+        cout << "trop petit : ";
+        cout << hDP.size() << endl;
+    }
+    else if (hDP.back() == hDP[hDP.size()-1]){
+            if (hDP.back() == hDP[hDP.size()-2]){
+                if (hDP.back() == hDP[hDP.size()-3]){
+                    param = true;
+                    cout << "CONFIGURATION FAITE: BILLARD DETECTE" << endl << endl;
+                }
+            }
+    }
+    else {
+        param = false;
+        cout << "RAS" << endl;
+    }
+
     return param;
 }
 
@@ -324,7 +287,6 @@ int perimetrePoints(vector<Point> contours){
     }
     else return 0;
 }
-
 
 void repositionnement(vector<Point> &approx, Mat dst, bool aff){
 
