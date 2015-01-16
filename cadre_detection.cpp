@@ -200,6 +200,10 @@ Billard cadreDetection2_callback(Mat img, vector<vector<Point> > &historiqueDesP
                         _billard.fsommet2=point2fposition(approx[1]);
                         _billard.fsommet3=point2fposition(approx[2]);
                         _billard.fsommet4=point2fposition(approx[3]);
+                        _billard.largeur_arriere=l1;
+                        _billard.longueur_droite=l2;
+                        _billard.longueur_gauche=l3;
+                        _billard.largeur_avant=l4;
                         k++;
                     }
 

@@ -21,15 +21,17 @@ using namespace std;
 using namespace cv;
 
 
+///\todo corriger la matrice de passage
 
-/// \todo voir pourquoi dans le main fposition2vector fait tout planter
+
 
 /// MATRICE de passage à partir des positions à l'écran et des vraies valeurs de l et L
-//   A B
-//   C D
+//   A B  x  +  E
+//   C D  y  +  F
+
 bool test_parametre(Billard billard, float E){
     bool probleme = false;
-    if ((E != E) || (isinf(E))||(E==0)||(abs(E)>100)||(abs(E)<0.00001)){
+    if ((E != E) || (isinf(E))||(E==0)||(abs(E)>100)||(abs(E)<0.0000001)){
         probleme = true;
     }
     return probleme;
@@ -99,7 +101,7 @@ float parametreC(Billard billard, float l, float L, float D, float F){ // A TEST
 }
 
 
-// VERIFIER LA POSITION DE CHACUN DES SOMMETS / QUI EST OU ?
+/// PRODUIT MATRICIEL
 
 fposition produitmatriciel2x2simple(fposition point, vector<float> coefficients){
     fposition sortie;
@@ -114,6 +116,9 @@ vector<fposition> produitmatriciel2x2(vector<fposition> contours, vector<float> 
         sortie.push_back(produitmatriciel2x2simple(contours[i],coefficients));
     return sortie;
 }
+
+
+/// CONVERSION DES FORMATS
 
 vector<fposition> fposition2vector(fposition position1,fposition position2,fposition position3,fposition position4){
     vector<fposition> pvect;
@@ -135,11 +140,6 @@ vector<float> float2vector(float A, float B, float C, float D, float E, float F)
     return sortie;
 }
 
-// VERIFIER LA POSITION DE CHACUN DES SOMMETS / QUI EST OU ?
-void conversionRepereBillard(Billard _billard){  // A FAIRE
-        //matricedepassage(_billard.sommet1, _billard.sommet2);
-
-}
 
 void affichage_projection(vector<Point> cadre, Mat drawing){
 
