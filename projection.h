@@ -18,13 +18,19 @@
 //   A B
 //   C D
 
-float parametreA(fposition pos1, fposition pos2, float l, float L);
+float parametreE(Billard billard, float l, float L);
 
-float parametreB(fposition pos1, fposition pos2, float l, float L);
+float parametreB(Billard billard, float l, float L, float E);
 
-float parametreC(fposition pos1, fposition pos2, float l, float L);
+float parametreA(Billard billard, float l, float L, float E, float B);
 
-float parametreD(fposition pos1, fposition pos2, float l, float L);
+float parametreF(Billard billard, float l, float L);
+
+float parametreD(Billard billard, float l, float L, float F);
+
+float parametreC(Billard billard, float l, float L, float F, float D);
+
+bool test_parametre(Billard billard, float E);
 
 std::vector<std::vector<float> > matricedepassage(position pos1, position pos2, float l, float L);
 
@@ -32,7 +38,7 @@ std::vector<fposition> produitmatriciel2x2(std::vector<fposition> contours, std:
 
 std::vector<fposition> fposition2vector(fposition position1,fposition position2,fposition position3,fposition position4);
 
-std::vector<float> float2vector(float A, float B, float C, float D);
+std::vector<float> float2vector(float A, float B, float C, float D, float E, float F);
 
 void affichage_projection(std::vector<cv::Point> cadre, cv::Mat drawing);
 

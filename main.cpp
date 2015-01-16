@@ -60,6 +60,11 @@ int main( int argc, char** argv){
 
     vector<Point> anglesBillard;
     Billard billard;
+    billard.fsommet1.x = 0; billard.fsommet1.y = 0;
+    billard.fsommet2.x = 0; billard.fsommet2.y = 0;
+    billard.fsommet3.x = 0; billard.fsommet3.y = 0;
+    billard.fsommet4.x = 0; billard.fsommet4.y = 0;
+
 
     vector<vector<Point> > historiquedespositions;
 
@@ -99,12 +104,15 @@ int main( int argc, char** argv){
         /* UTILISATION DE LA PROJECTION */
         float l = 5.5;
         float L = 8.5;
-        float A = parametreA(billard.fsommet1, billard.fsommet2, l, L);
-        float B = parametreB(billard.fsommet1, billard.fsommet2, l, L);
-        float C = parametreC(billard.fsommet1, billard.fsommet2, l, L);
-        float D = parametreD(billard.fsommet1, billard.fsommet2, l, L);
-        vector<float> coefficients = float2vector(A,B,C,D) ;
-        cout << "A :" << A << " B :" << B << " C :" << C << " D: " << D << endl;
+        float E = parametreE(billard, l, L);
+        float B = parametreB(billard, l, L, E);
+        float A = parametreA(billard, l, L, E, B);
+        float F = parametreF(billard, l, L);
+        float D = parametreD(billard, l, L, F);
+        float C = parametreC(billard, l, L, F, D);
+        vector<float> coefficients = float2vector(A,B,C,D,E,F) ;
+
+        cout << "A :" << A << " B :" << B << " C :" << C << " D: " << D <<" E "<< E << " F " << F << endl;
         vector<fposition> fcontours = fposition2vector(billard.fsommet1, billard.fsommet2, billard.fsommet3, billard.fsommet4);
         vector<fposition> nouveaucadre = produitmatriciel2x2(fcontours, coefficients);
         vector<Point> _nouveaucadre = vecfposition2vecpoint(nouveaucadre);

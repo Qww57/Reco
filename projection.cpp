@@ -12,7 +12,6 @@
 
 #include <vector>
 #include <math.h>
-#include <limits>
 #include <iostream>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -28,38 +27,75 @@ using namespace cv;
 /// MATRICE de passage à partir des positions à l'écran et des vraies valeurs de l et L
 //   A B
 //   C D
-
-float parametreA(fposition pos1, fposition pos2, float l, float L){ // A TESTER
-    float A;
-    A = - l / (pos2.y - (pos1.y/pos1.x)*pos2.x) * (pos2.x / pos1.x);
-    if ((A != A) || (isinf(A)))
-        A = 1;
-    return A;
+bool test_parametre(Billard billard, float E){
+    bool probleme = false;
+    if ((E != E) || (isinf(E))||(E==0)||(abs(E)>100)||(abs(E)<0.00001)){
+        probleme = true;
+    }
+    return probleme;
 }
 
-///\todo fait des trucs bizarres
-float parametreB(fposition pos1, fposition pos2, float l, float L){ // A TESTER
+
+float parametreE(Billard billard, float l, float L){
+    float E;
+    float Y = billard.fsommet1.y/billard.fsommet1.x;
+    float W = Y*billard.fsommet3.x - billard.fsommet3.x;
+    float X = billard.fsommet2.y - Y*billard.fsommet2.x;
+    float Edenom = ((1-billard.sommet2.x/billard.fsommet1.x)*Y + (1-billard.fsommet3.x/billard.fsommet1.x)*W);
+    E = L*(W+X) / Edenom;
+    if (test_parametre(billard, E))
+        E = 1;
+    return E;
+}
+
+float parametreB(Billard billard, float l, float L, float E){ // A TESTER
     float B;
-    B = l / (pos2.y - (pos1.y/pos1.x)*pos2.x);
-    if ((B != B) || (isinf(B)))
+    float Y = billard.fsommet1.y/billard.fsommet1.x;
+    float X = billard.fsommet2.y - Y*billard.fsommet2.x;
+    B = (L-E*(1-billard.fsommet2.x/billard.fsommet1.x))/X;
+    if (test_parametre(billard, B))
         B = 1;
     return B;
 }
 
-float parametreC(fposition pos1, fposition pos2, float l, float L){ // A TESTER
-    float C;
-    C = (L - (L*(1-pos2.x/pos1.x)/(pos2.y - (pos1.y/pos1.x)*pos2.x))*pos1.y)/pos1.x;
-    if ((C != C) || (isinf(C)))
-        C = 1;
-    return C;
+float parametreA(Billard billard, float l, float L, float B, float E){ // A TESTER
+    float A;
+    float Y = billard.fsommet1.y/billard.fsommet1.x;
+    A = -B*Y -E/billard.fsommet1.x;
+    if (test_parametre(billard, A))
+        A = 1;
+    return A;
 }
 
-float parametreD(fposition pos1, fposition pos2, float l, float L){ // A TESTER
+float parametreF(Billard billard, float l, float L){
+    float F;
+    float Y = billard.fsommet1.y/billard.fsommet1.x;
+    float W = Y*billard.fsommet3.x - billard.fsommet3.x;
+    float X = billard.fsommet4.y - Y*billard.fsommet4.x;
+    float Fdenom = ((1-billard.sommet4.x/billard.fsommet1.x)*Y + (1-billard.fsommet3.x/billard.fsommet1.x)*W);
+    F = l*(W+X) / Fdenom;
+    if (test_parametre(billard, F))
+        F = 1;
+    return F;
+}
+
+float parametreD(Billard billard, float l, float L, float E){ // A TESTER
     float D;
-    D = L*(1-pos2.x/pos1.x)/(pos2.y - (pos1.y/pos1.x)*pos2.x);
-    if ((D != D) || (isinf(D)))
+    float Y = billard.fsommet1.y/billard.fsommet1.x;
+    float X = billard.fsommet4.y - Y*billard.fsommet4.x;
+    D = (l-E*(1-billard.fsommet4.x/billard.fsommet1.x))/X;
+    if (test_parametre(billard, D))
         D = 1;
     return D;
+}
+
+float parametreC(Billard billard, float l, float L, float D, float F){ // A TESTER
+    float C;
+    float Y = billard.fsommet1.y/billard.fsommet1.x;
+    C = -D*Y -F/billard.fsommet1.x;
+    if (test_parametre(billard, C))
+        C = 1;
+    return C;
 }
 
 
@@ -67,8 +103,8 @@ float parametreD(fposition pos1, fposition pos2, float l, float L){ // A TESTER
 
 fposition produitmatriciel2x2simple(fposition point, vector<float> coefficients){
     fposition sortie;
-    sortie.x = coefficients[0]*point.x + coefficients[1]*point.y;
-    sortie.y = coefficients[3]*point.x + coefficients[4]*point.y;
+    sortie.x = coefficients[0]*point.x + coefficients[1]*point.y + coefficients[5];
+    sortie.y = coefficients[3]*point.x + coefficients[4]*point.y + coefficients[6];
     return sortie;
 }
 
@@ -88,12 +124,14 @@ vector<fposition> fposition2vector(fposition position1,fposition position2,fposi
     return pvect;
 }
 
-vector<float> float2vector(float A, float B, float C, float D){
+vector<float> float2vector(float A, float B, float C, float D, float E, float F){
     vector<float> sortie;
     sortie.push_back(A);
     sortie.push_back(B);
     sortie.push_back(C);
     sortie.push_back(D);
+    sortie.push_back(E);
+    sortie.push_back(F);
     return sortie;
 }
 
