@@ -74,8 +74,8 @@ struct position{
  *
  */
 struct fposition{
-    float x;
-    float y;
+    double x;
+    double y;
 };
 
 /**
@@ -89,9 +89,15 @@ struct fposition{
  */
 struct Boule {
     std::string couleur;
-    float rayon_reel = 27; // 54 mm de diamètre mesuré
-    float rayon_vu;
-    position pos;
+    double rayon_reel = 27; // 54 mm de diamètre mesuré
+    double rayon_vu;
+    cv::Point centre;
+};
+
+struct jeuBoules {
+    Boule rouge;
+    Boule jaune;
+    Boule bleu;
 };
 
 /**
@@ -115,14 +121,14 @@ struct Billard {
     fposition fsommet4;
 
     // longueur vues par la caméra
-    float longueur_gauche;
-    float longueur_droite;
-    float largeur_avant;
-    float largeur_arriere;
+    double longueur_gauche;
+    double longueur_droite;
+    double largeur_avant;
+    double largeur_arriere;
 
     // longueur réelles
-    float Longueur_reelle;
-    float largeur_reelle;
+    double Longueur_reelle;
+    double largeur_reelle;
 
     // points dans le repère vu du dessus
 

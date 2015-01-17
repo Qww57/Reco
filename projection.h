@@ -5,7 +5,7 @@
  * \version 0.1
  * \date 15 janvier 2015
  *
- *
+ *  A DEBUGER
  *
  *
  */
@@ -18,28 +18,32 @@
 //   A B
 //   C D
 
-float parametreE(Billard billard, float l, float L);
+double parametreE(Billard billard, double l, double L);
 
-float parametreB(Billard billard, float l, float L, float E);
+double parametreB(Billard billard, double l, double L, double E);
 
-float parametreA(Billard billard, float l, float L, float E, float B);
+double parametreA(Billard billard, double l, double L, double E, double B);
 
-float parametreF(Billard billard, float l, float L);
+double parametreF(Billard billard, double l, double L);
 
-float parametreD(Billard billard, float l, float L, float F);
+double parametreD(Billard billard, double l, double L, double F);
 
-float parametreC(Billard billard, float l, float L, float F, float D);
+double parametreC(Billard billard, double l, double L, double F, double D);
 
-bool test_parametre(Billard billard, float E);
+bool test_parametre(Billard billard, double E);
 
-std::vector<std::vector<float> > matricedepassage(position pos1, position pos2, float l, float L);
+std::vector<double> matrice(Billard b, float L, float l);
 
-std::vector<fposition> produitmatriciel2x2(std::vector<fposition> contours, std::vector<float> coefficients);
+std::vector<std::vector<double> > matricedepassage(position pos1, position pos2, double l, double L);
+
+std::vector<fposition> produitmatriciel2x2(std::vector<fposition> contours, std::vector<double> coefficients);
+
+fposition produitmatriciel2x2simple(fposition point, std::vector<double> coefficients);
 
 std::vector<fposition> fposition2vector(fposition position1,fposition position2,fposition position3,fposition position4);
 
-std::vector<float> float2vector(float A, float B, float C, float D, float E, float F);
+std::vector<double> double2vector(double A, double B, double C, double D, double E, double F);
 
 void affichage_projection(std::vector<cv::Point> cadre, cv::Mat drawing);
 
-cv::Mat changement_echelle(cv::Point p1, cv::Point p2, cv::Point p3, cv::Point p4);
+cv::Mat changement_echelle(cv::Point p1, cv::Point p2, cv::Point p3, cv::Point p4);// pas utilisée

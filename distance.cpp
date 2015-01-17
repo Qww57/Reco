@@ -26,17 +26,19 @@ int calculDistanceSimplifie(int radius){
 }
 
 
-position calculPositionSimplifie(Boule boule){ /// TO DO
+position calculPositionSimplifie(Billard billard, Boule boule){ /// TO DO
+    // Distance au haut
+
+
 
 }
+
+
 
 
 float calculDistance(Boule boule, position camera){ /// TO DO
-    // On calcule la distance en utilisant le théorème de Thalès
-    // On tient en compte l'angle de la caméra
+
 }
-
-
 
 position calculPosition(Boule boule, position camera){
 

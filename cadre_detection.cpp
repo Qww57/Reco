@@ -235,10 +235,10 @@ bool parametrageCadreDone(vector<vector<Point> > hDP){
     bool param;
     if ((hDP.empty())||(hDP.size()<20)){
         param = false;
-        cout << "trop petit : " << hDP.size() << endl;
+        //cout << "trop petit : " << hDP.size() << endl;
     }
     else if ((hDP.back() == hDP[hDP.size()-1])&&(hDP.back() == hDP[hDP.size()-2])&&(hDP.back() == hDP[hDP.size()-3])){
-        //if ((hDP.back() == hDP[hDP.size()-4])&&(hDP.back() == hDP[hDP.size()-5])&&(hDP.back() == hDP[hDP.size()-6])){
+         //if ((hDP.back() == hDP[hDP.size()-4])&&(hDP.back() == hDP[hDP.size()-5])&&(hDP.back() == hDP[hDP.size()-6])){
             param = true;
             if (k==0)
                 cout << "CONFIGURATION FAITE: BILLARD DETECTE" << endl << endl;

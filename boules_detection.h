@@ -7,15 +7,26 @@
  *
  * Partie dédiée à la reconnaissance des boules de billard
  *
- */
+ **/
+
+ #ifndef BOULES_DETECTION_H
+ #define BOULES_DETECTION_H
+
+#include <string>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
+#include "conversion_format.h"
+#include "structures.h"
 
 extern int sigmaX;
 extern int sigmaY;
 extern int minRayon;
 extern int maxRayon;
 
-#ifndef BOULES_DETECTION_H
-#define BOULES_DETECTION_H
+
+
+std::string conditioncouleurs(cv::Mat *img, int *nbPixels, jeuCouleurs defCouleurs, cv::Point center);
 
 /**
  * \fn void bouleDetection_callback(int, void*, Mat img)
@@ -25,7 +36,7 @@ extern int maxRayon;
  * \return création d'une fenêtre à l'écran "Boule"
  *         où les boules sont détectées, retracées et où leur distance est affichée
  */
-void bouleDetection_callback(int, void*, cv::Mat img);
+void bouleDetection_callback(cv::Mat img, jeuBoules *boules);
 
 
 /**
@@ -36,5 +47,7 @@ void bouleDetection_callback(int, void*, cv::Mat img);
  * \return création d'une trackbar sur la fenêtre "Boules" de bouleDetection_callback()
  */
 void bouleDetection_createtrackbar();
+
+
 
 #endif // BOULES_DETECTION_H

@@ -49,8 +49,8 @@ position point2position(Point point){
 
 fposition point2fposition(Point point){
     fposition _position;
-    _position.x = (float) point.x;
-    _position.y = (float) point.y;
+    _position.x = (double) point.x;
+    _position.y = (double) point.y;
     return _position;
 }
 
@@ -67,4 +67,13 @@ vector<Point> vecfposition2vecpoint(vector<fposition> entree){
         sortie.push_back(fposition2point(entree[i]));
     return sortie;
 }
+
+IplImage Mat2IplImage(Mat image1){
+    IplImage* image2;
+    image2 = cvCreateImage(cvSize(image1.cols,image1.rows),8,3);
+    IplImage ipltemp=image1;
+    cvCopy(&ipltemp,image2);
+    return *image2;
+}
+
 

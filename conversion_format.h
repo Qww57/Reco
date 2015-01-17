@@ -17,6 +17,8 @@
 #include <string>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv/highgui.h"
+#include "opencv/cv.h"
 
 #include "structures.h"
 
@@ -58,5 +60,7 @@ fposition point2fposition(cv::Point point);
 
 cv::Point fposition2point(fposition fpos);
 std::vector<cv::Point> vecfposition2vecpoint(std::vector<fposition> entree);
+
+IplImage Mat2IplImage(cv::Mat image1);
 
 #endif //CONVERSION_FORMAT_H

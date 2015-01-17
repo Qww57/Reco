@@ -15,6 +15,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
+#include "structures.h"
+
 extern int thresh;
 extern int max_thresh;
 extern colorCalibrage calibrage;
@@ -40,7 +42,7 @@ void contours_callback(cv::Mat imgG);
  * \param Mat img en entrée
  * \return création d'une fenêtre à l'écran où les couleurs sont détectées par seuil
  */
-void color_callback(cv::Mat img );
+void color_callback(cv::Mat img, colorCalibrage *calibrage);
 
 
 
@@ -64,8 +66,6 @@ void contours_createtrackbar();
  * \return création d'une trackbar sur la fenêtre "Thresholded Image" de color_callback()
  */
 void color_createtrackbar();
-
-
 
 
 

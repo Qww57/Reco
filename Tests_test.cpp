@@ -1,9 +1,12 @@
 
-// int perimetrePoints(std::vector<cv::Point> contours);
+#include "time.h"
+#include <vector>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "cadre_detection.h"
 #include "structures.h"
+#include "projection.h"
+
 
 #include "gtest/gtest.h"
 
@@ -13,12 +16,43 @@ using namespace cv;
 
 
 int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 
 /// PROJECTION
 
+TEST(produitmatriciel2x2simple, usage_normal){
+
+
+}
+
+TEST(produitmatriciel2x2simple, matrice_nulle){
+
+
+}
+
+TEST(produitmatriciel2x2simple, vecteur_nul){
+
+
+}
+
+
+TEST(produitmatriciel2x2simple, deuxfoislamemechose){
+    fposition position;
+    position.x = rand()%10;
+    position.y = rand()%10;
+
+    vector<double> coefficients;
+    coefficients.push_back(position.x);
+    coefficients.push_back(position.y);
+
+    fposition test1 = produitmatriciel2x2simple(position, coefficients);
+    fposition test2 = produitmatriciel2x2simple(position, coefficients);
+
+    EXPECT_EQ(test1.x,test2.x);
+    EXPECT_EQ(test1.y,test2.y);
+}
 
 
 /// CADRE DETECTION

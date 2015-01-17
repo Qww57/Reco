@@ -33,10 +33,10 @@ using namespace std;
 /**
 *
 * \todo
-// - faire la projection: DONE
+// - faire la projection: FAIL
 // - faire les tests unitaire de la projection
 // - faire la fonction de calcul de la position simplifiée
-// - faire le parametrage de la detection : DONE : A TESTER
+// - faire le parametrage de la detection : DONE
 // - faire la détection de la canne
 // - refaire la fonction de calcul de la distance non simplifiée (plus tard)
 // - refaire la fonction de calcul de la position non simplifiée (plus tard)
@@ -67,6 +67,7 @@ int main( int argc, char** argv){
 
 
     vector<vector<Point> > historiquedespositions;
+    jeuBoules boules;
 
 
     while (true)
@@ -81,6 +82,8 @@ int main( int argc, char** argv){
              break;
         }
 
+
+
         /// Flip image, convert image to gray and blur it
         Mat imgFlip;
         flip(imgOriginal,imgFlip,1);
@@ -93,39 +96,27 @@ int main( int argc, char** argv){
         //imshow("Original", imgFlip);
         //contours_callback( 0, 0, imgGray);
         //color_callback( 0, 0, imgFlip);
-        //bouleDetection_callback(0,0,imgFlip);
+        bouleDetection_callback(imgFlip, &boules);
         //contours_createtrackbar();
         //color_createtrackbar();
-        //bouleDetection_createtrackbar();
+        bouleDetection_createtrackbar();
 
         billard = cadreDetection2_callback(imgFlip, historiquedespositions);
-        //affichage_projection_test(imgFlip);
 
-        /* UTILISATION DE LA PROJECTION */
-        float l = 5.5;
-        float L = 8.5;
-        float E = parametreE(billard, l, L);
-        float B = parametreB(billard, l, L, E);
-        float A = parametreA(billard, l, L, E, B);
-        float F = parametreF(billard, l, L);
-        float D = parametreD(billard, l, L, F);
-        float C = parametreC(billard, l, L, F, D);
-        vector<float> coefficients = float2vector(A,B,C,D,E,F) ;
-
-        cout << "A :" << A << " B :" << B << " C :" << C << " D: " << D <<" E "<< E << " F " << F << endl;
-        vector<fposition> fcontours = fposition2vector(billard.fsommet1, billard.fsommet2, billard.fsommet3, billard.fsommet4);
-        vector<fposition> nouveaucadre = produitmatriciel2x2(fcontours, coefficients);
-        vector<Point> _nouveaucadre = vecfposition2vecpoint(nouveaucadre);
-        affichage_projection(_nouveaucadre, imgFlip);
-
-
+        cout << " Rouge " << boules.rouge.centre << " Rayon: " << boules.rouge.rayon_vu << endl;
+        cout << " Bleu " << boules.bleu.centre << " Rayon: " << boules.bleu.rayon_vu << endl;
+        cout << " Jaune " << boules.jaune.centre << " Rayon: " << boules.jaune.rayon_vu << endl;
 
         if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
         {
             cout << "esc key is pressed by user" << endl;
+
             break;
         }
+
+
     }
+
     return(0);
 }
 

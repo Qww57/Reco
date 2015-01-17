@@ -59,15 +59,15 @@ void contours_callback(Mat img){ // INUTILE
     imshow( "Contours", drawing );
 }
 
-void color_callback(Mat img){ // INUTILE
+void color_callback(Mat img, colorCalibrage *calibrage){ // INUTILE
     Mat imgHSV;
 
     cvtColor(img, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
 
     Mat imgThresholded;
 
-    inRange(imgHSV, Scalar(calibrage.iLowH, calibrage.iLowS, calibrage.iLowV),
-                    Scalar(calibrage.iHighH, calibrage.iHighS, calibrage.iHighV), imgThresholded); //Threshold the image
+    inRange(imgHSV, Scalar(calibrage->iLowH, calibrage->iLowS, calibrage->iLowV),
+                    Scalar(calibrage->iHighH, calibrage->iHighS, calibrage->iHighV), imgThresholded); //Threshold the image
 
     //morphological opening (remove small objects from the foreground)
     erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
