@@ -110,10 +110,15 @@ struct jeuBoules {
  */
 struct Billard {
     // points vus à l'écran, on s'intéresse qu'à x et y
-    position sommet1;
+    cv::Point sommet0;
+    cv::Point sommet1;
+    cv::Point sommet2;
+    cv::Point sommet3;
+
+    /*position sommet1;
     position sommet2;
     position sommet3;
-    position sommet4;
+    position sommet4;*/
 
     fposition fsommet1;
     fposition fsommet2;

@@ -195,15 +195,20 @@ Billard cadreDetection2_callback(Mat img, vector<vector<Point> > &historiqueDesP
 
 
                     // ENREGISTREMENT DES DONNEES DANS LE BILLARD
-                    if (parametrageCadreDone(historiqueDesPositions)&&(k==0)){
+                    if ((parametrageCadreDone(historiqueDesPositions))&&(k==0)){
                         _billard.fsommet1=point2fposition(approx[0]);
                         _billard.fsommet2=point2fposition(approx[1]);
                         _billard.fsommet3=point2fposition(approx[2]);
                         _billard.fsommet4=point2fposition(approx[3]);
+                        _billard.sommet0 = approx[0];
+                        _billard.sommet1 = approx[1];
+                        _billard.sommet2 = approx[2];
+                        _billard.sommet3 = approx[3];
                         _billard.largeur_arriere=l1;
                         _billard.longueur_droite=l2;
                         _billard.longueur_gauche=l3;
                         _billard.largeur_avant=l4;
+                        cout << "Je suis là" << endl;
                         k++;
                     }
 

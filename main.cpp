@@ -46,6 +46,9 @@ using namespace std;
 */
 
 
+Billard billard;
+
+
 /// MAIN
 
 int main( int argc, char** argv){
@@ -58,17 +61,8 @@ int main( int argc, char** argv){
          return -1;
     }
 
-    vector<Point> anglesBillard;
-    Billard billard;
-    billard.fsommet1.x = 0; billard.fsommet1.y = 0;
-    billard.fsommet2.x = 0; billard.fsommet2.y = 0;
-    billard.fsommet3.x = 0; billard.fsommet3.y = 0;
-    billard.fsommet4.x = 0; billard.fsommet4.y = 0;
-
-
     vector<vector<Point> > historiquedespositions;
     jeuBoules boules;
-
 
     while (true)
     {
@@ -82,15 +76,13 @@ int main( int argc, char** argv){
              break;
         }
 
-
-
         /// Flip image, convert image to gray and blur it
         Mat imgFlip;
         flip(imgOriginal,imgFlip,1);
 
-        Mat imgGray;
-        cvtColor( imgFlip, imgGray, CV_BGR2GRAY );
-        blur( imgFlip, imgGray, Size(3,3) );
+        //Mat imgGray;
+        //cvtColor( imgFlip, imgGray, CV_BGR2GRAY );
+        //blur( imgFlip, imgGray, Size(3,3) );
 
         /// Create Windows and Trackbars
         //imshow("Original", imgFlip);
@@ -103,16 +95,22 @@ int main( int argc, char** argv){
 
         billard = cadreDetection2_callback(imgFlip, historiquedespositions);
 
-        cout << " Rouge " << boules.rouge.centre << " Rayon: " << boules.rouge.rayon_vu << endl;
+
+        /* cout << " Rouge " << boules.rouge.centre << " Rayon: " << boules.rouge.rayon_vu << endl;
         cout << " Bleu " << boules.bleu.centre << " Rayon: " << boules.bleu.rayon_vu << endl;
-        cout << " Jaune " << boules.jaune.centre << " Rayon: " << boules.jaune.rayon_vu << endl;
+        cout << " Jaune " << boules.jaune.centre << " Rayon: " << boules.jaune.rayon_vu << endl; */
+        cout << "Billard" << billard.sommet0 << billard.sommet1 << billard.sommet2 << billard.sommet3 << endl;
+        cout << "Billard f: " << billard.fsommet1.x << endl;
 
         if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
         {
             cout << "esc key is pressed by user" << endl;
-
+            imgFlip.release();
+            imgOriginal.release();
             break;
+
         }
+
 
 
     }
